@@ -5,12 +5,11 @@ using GSSA;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChatChatChat : MonoBehaviour
+public class ChatChatChat_Complete : MonoBehaviour
 {
     [SerializeField] private Text logText;
     [SerializeField] private InputField nameInputField;
     [SerializeField] private InputField messageInputField;
-
 
     private List<string> chatLogList = new List<string>();
     private long lastGetTime;
@@ -44,7 +43,7 @@ public class ChatChatChat : MonoBehaviour
                 foreach (var so in query.Result.Reverse())
                 {
                     chatLogList.Insert(0,so["name"] + ">" + so["message"]);
-                    if (chatLogList.Count > 20) chatLogList.Remove(chatLogList.Last());
+                    if (chatLogList.Count > 17) chatLogList.Remove(chatLogList.Last());
                 }
                 logText.text = string.Join("\n", chatLogList.ToArray());
                 lastGetTime = (long)query.Result.First()["createTime"];
