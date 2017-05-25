@@ -9,6 +9,9 @@ using UnityEngine.Networking;
 
 namespace GSSA
 {
+    /// <summary>
+    /// GoogleSpreadSheetからデータ取得をするQueryオブジェクト
+    /// </summary>
     public class SpreadSheetQuery
     {
         private readonly List<CompareData> _compareList = new List<CompareData>();
@@ -17,6 +20,11 @@ namespace GSSA
         public IEnumerable<SpreadSheetObject> Result { private set; get; }
         public int Count { private set; get; }
 
+        /// <summary>
+        /// コンストラクタ
+        /// sheetNameを省略(null)にした場合は、SpreadSheetSettingのDefalutSheetNameを使用
+        /// </summary>
+        /// <param name="sheetName"></param>
         public SpreadSheetQuery(string sheetName = null)
         {
             this.sheetName = sheetName ?? SpreadSheetSetting.Instance.DefalutSheetName;
@@ -27,18 +35,33 @@ namespace GSSA
         private string _orderKey;
         private bool _isDesc;
 
+        /// <summary>
+        /// 返却されるリストの先頭から指定した数を上限として取得
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         public SpreadSheetQuery Limit(int? limit = null)
         {
             _limit = limit;
             return this;
         }
 
+        /// <summary>
+        /// 返却されるリストの先頭から指定した数を飛ばして取得
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <returns></returns>
         public SpreadSheetQuery Skip(int? skip = null)
         {
             _skip = skip;
             return this;
         }
 
+        /// <summary>
+        /// 指定したキーで昇順にソートして返却
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public SpreadSheetQuery OrderByAscending(string key)
         {
             _orderKey = key;
@@ -46,6 +69,11 @@ namespace GSSA
             return this;
         }
 
+        /// <summary>
+        /// 指定したキーで降順にソートして返却
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public SpreadSheetQuery OrderByDescending(string key)
         {
             _orderKey = key;
@@ -53,6 +81,10 @@ namespace GSSA
             return this;
         }
 
+        /// <summary>
+        /// ソートキーのクリア処理
+        /// </summary>
+        /// <returns></returns>
         public SpreadSheetQuery ClearOrderBy()
         {
             _orderKey = null;
@@ -60,19 +92,41 @@ namespace GSSA
             return this;
         }
 
+        /// <summary>
+        /// 返却されるリストのフィルタ条件
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="op"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public SpreadSheetQuery Where(string target, CompareData.CompareType op, object value)
         {
             _compareList.Clear();
             return AndWhere(target, op, value);
         }
 
-
+        /// <summary>
+        /// 返却されるリストの検索条件
+        /// op には =,==,<,<=,>,>=,!=,<> が使用可
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="op"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public SpreadSheetQuery Where(string target, string op, object value)
         {
             _compareList.Clear();
             return AndWhere(target, op, value);
         }
 
+        /// <summary>
+        /// AND検索条件
+        /// op には =,==,<,<=,>,>=,!=,<> が使用可
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="op"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public SpreadSheetQuery AndWhere(string target, string op, object value)
         {
             var compareType = CompareData.CompareType.NONE;
@@ -102,6 +156,14 @@ namespace GSSA
             return AndWhere(target, compareType, value);
         }
 
+
+        /// <summary>
+        /// AND検索条件
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="op"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public SpreadSheetQuery AndWhere(string target, CompareData.CompareType op, object value)
         {
             var compare = new CompareData{target = target, value = value, compare = op};
@@ -109,6 +171,13 @@ namespace GSSA
             return this;
         }
 
+        /// <summary>
+        /// 検索処理実行
+        /// Coroutineの中であればyield returnで待機可能
+        /// その場合の返却値はResultに格納される
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
         public CustomYieldInstruction FindAsync(Action<List<SpreadSheetObject>> callback = null)
         {
             var complete = false;
@@ -164,6 +233,14 @@ namespace GSSA
                 endAction(true);
             }
         }
+
+
+        /// <summary>
+        /// 検索したリストのカウントのみを取得
+        /// Coroutineの中であればyield returnで待機可能
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
         public CustomYieldInstruction CountAsync(Action<int> callback = null)
         {
             var complete = false;

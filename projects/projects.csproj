@@ -84,6 +84,11 @@
     <Compile Include="Assets\GSSA\Scripts\SpreadSheetQuery.cs" />
     <Compile Include="Assets\GSSA\Scripts\SpreadSheetSetting.cs" />
     <Compile Include="Assets\Samples\Complete\Sample1_ChatChatChat\ChatChatChat_Complete.cs" />
+    <Compile Include="Assets\Samples\Complete\Sample2_2mu2mu\Ball.cs" />
+    <Compile Include="Assets\Samples\Complete\Sample2_2mu2mu\DialogPanel.cs" />
+    <Compile Include="Assets\Samples\Complete\Sample2_2mu2mu\GameMain.cs" />
+    <Compile Include="Assets\Samples\Complete\Sample2_2mu2mu\Leaderboard.cs" />
+    <Compile Include="Assets\Samples\Complete\Sample2_2mu2mu\UIFader.cs" />
     <Compile Include="Assets\Samples\Empty\Sample1_ChatChatChat\ChatChatChat.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
