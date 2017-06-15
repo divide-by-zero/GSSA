@@ -34,6 +34,8 @@ namespace GSSA
         private int? _skip;
         private string _orderKey;
         private bool _isDesc;
+        private string[] selectStrings;
+        private string _distinctKey;
 
         /// <summary>
         /// 返却されるリストの先頭から指定した数を上限として取得
@@ -89,6 +91,30 @@ namespace GSSA
         {
             _orderKey = null;
             _isDesc = true;
+            return this;
+        }
+
+        /// <summary>
+        /// 返却されるリストの項目を指定
+        /// "id,name"のようにしてもよいし、"id","name"のように引数を増やしてもよい
+        /// </summary>
+        /// <param name="selects"></param>
+        /// <returns></returns>
+        public SpreadSheetQuery Select(params string[] selects)
+        {
+            selectStrings = selects.SelectMany(s => s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)).Select(s => s.Trim()).ToArray();
+            return this;
+        }
+
+        /// <summary>
+        /// 指定したキーの重複が無い状態で返却。
+        /// 重複がある場合は先に発見された方が使用されるため、OrderByAscendingもしくはOrderByDescendingとの併用が望ましい
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public SpreadSheetQuery Distinct(string key = null)
+        {
+            _distinctKey = key;
             return this;
         }
 
@@ -156,7 +182,6 @@ namespace GSSA
             return AndWhere(target, compareType, value);
         }
 
-
         /// <summary>
         /// AND検索条件
         /// </summary>
@@ -166,7 +191,7 @@ namespace GSSA
         /// <returns></returns>
         public SpreadSheetQuery AndWhere(string target, CompareData.CompareType op, object value)
         {
-            var compare = new CompareData{target = target, value = value, compare = op};
+            var compare = new CompareData { target = target, value = value, compare = op };
             if (compare.compare != CompareData.CompareType.NONE) _compareList.Add(compare);
             return this;
         }
@@ -181,23 +206,26 @@ namespace GSSA
         public CustomYieldInstruction FindAsync(Action<List<SpreadSheetObject>> callback = null)
         {
             var complete = false;
-            SpreadSheetSetting.Instance.Enqueue(()=>FindAsyncIterator(callback,b => complete = b));
+            SpreadSheetSetting.Instance.Enqueue(() => FindAsyncIterator(callback, b => complete = b));
             return new WaitUntil(() => complete);
         }
 
-        private IEnumerator FindAsyncIterator(Action<List<SpreadSheetObject>> callback,Action<bool> endAction)
+        private IEnumerator FindAsyncIterator(Action<List<SpreadSheetObject>> callback, Action<bool> endAction)
         {
             var form = new WWWForm();
             form.AddField(SpreadSheetConst.Method, "Find");
             form.AddField(SpreadSheetConst.SheetName, sheetName);
             var output = Json.Serialize(_compareList.Select(data => data.ToDictionary()).ToList());
             form.AddField(SpreadSheetConst.Where, output);
-            if(_skip.HasValue)form.AddField(SpreadSheetConst.Skip, _skip.Value);
-            if(_limit.HasValue)form.AddField(SpreadSheetConst.Limit, _limit.Value);
+            if (_skip.HasValue) form.AddField(SpreadSheetConst.Skip, _skip.Value);
+            if (_limit.HasValue) form.AddField(SpreadSheetConst.Limit, _limit.Value);
+            if (selectStrings != null && selectStrings.Any()) form.AddField(SpreadSheetConst.Select, Json.Serialize(selectStrings));
+            if (string.IsNullOrEmpty(_distinctKey) == false) form.AddField(SpreadSheetConst.Distinct, _distinctKey);
+
             if (string.IsNullOrEmpty(_orderKey) == false)
             {
-                form.AddField(SpreadSheetConst.OrderBy,_orderKey);
-                form.AddField(SpreadSheetConst.IsDesc,_isDesc ? -1 : 1);
+                form.AddField(SpreadSheetConst.OrderBy, _orderKey);
+                form.AddField(SpreadSheetConst.IsDesc, _isDesc ? -1 : 1);
             }
 
             using (var www = UnityWebRequest.Post(SpreadSheetSetting.Instance.SpreadSheetUrl, form))
@@ -244,11 +272,11 @@ namespace GSSA
         public CustomYieldInstruction CountAsync(Action<int> callback = null)
         {
             var complete = false;
-            SpreadSheetSetting.Instance.Enqueue(()=>CountAsyncIterator(callback,b => complete = b));
+            SpreadSheetSetting.Instance.Enqueue(() => CountAsyncIterator(callback, b => complete = b));
             return new WaitUntil(() => complete);
         }
 
-        private IEnumerator CountAsyncIterator(Action<int> callback,Action<bool> endAction)
+        private IEnumerator CountAsyncIterator(Action<int> callback, Action<bool> endAction)
         {
             var form = new WWWForm();
             form.AddField(SpreadSheetConst.Method, "Count");
@@ -291,7 +319,7 @@ namespace GSSA
 
             public Dictionary<string, object> ToDictionary()
             {
-                return new Dictionary<string, object>{{SpreadSheetConst.Target, target},{SpreadSheetConst.Value, value},{SpreadSheetConst.Compare, compare}};
+                return new Dictionary<string, object> { { SpreadSheetConst.Target, target }, { SpreadSheetConst.Value, value }, { SpreadSheetConst.Compare, compare } };
             }
         }
     }

@@ -1,6 +1,8 @@
 var Const = {
   Method : "$mt$",
   SheetName : "$sn$",
+  Select: "$sl$",
+  Distinct: "$di$",
   Where : "$wh$",
   ObjectId : "$oi$",
   Target : "$tg$",
@@ -103,6 +105,8 @@ function FindFunc(sheet,res){
   var skip = res[Const.Skip];
   var limit = res[Const.Limit];
   var where = res[Const.Where];
+  var select = res[Const.Select];
+  var distinct = res[Const.Distinct];
 
   var range = sheet.getDataRange();
   var sheetData = range.getValues();
@@ -165,8 +169,43 @@ function FindFunc(sheet,res){
       });
     }
   }
+  
+  //重複を抜く
+  if(distinct){
+    var index = headers.indexOf(distinct);
+    if(index >= 0){
+      retData = retData.filter(function (x, i, self) {
+        var distinctTarget = x.value[index];       
+        for(var findIndex = 0;findIndex < i;findIndex++){
+          if(self[findIndex].value[index] == distinctTarget)return false;
+        }
+        return true;
+      });
+    }
+  }
+  
   if(skip)retData = retData.slice(skip);
   if(limit)retData = retData.slice(0,limit);
+  
+  //返却データを全データではなく、selectで指定されている項目だけにしてあげる
+  if(select)
+  {
+    var selects = JSON.parse(select);
+
+    for(var headerIndex = 0;headerIndex < headers.length;){
+      var key = headers[headerIndex];
+      var findIndex = selects.indexOf(key);
+      if(findIndex < 0){
+        for(var d in retData)
+        {
+          retData[d].value.splice(headerIndex,1);
+        }
+        headers.splice(headerIndex, 1); // indexのところを削除
+        continue;
+      }
+      headerIndex++;
+    }   
+  }
 
   return {values:retData,keys:headers}; 
 }
