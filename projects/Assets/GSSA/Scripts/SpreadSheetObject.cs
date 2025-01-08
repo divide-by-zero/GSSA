@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,17 +7,17 @@ using UnityEngine.Networking;
 namespace GSSA
 {
     /// <summary>
-    /// GoogleSpreadSheet‚Ìƒf[ƒ^i1sj‚ğ•\‚·ƒf[ƒ^ƒIƒuƒWƒFƒNƒg
+    /// GoogleSpreadSheetã®ãƒ‡ãƒ¼ã‚¿ï¼ˆ1è¡Œï¼‰ã‚’è¡¨ã™ãƒ‡ãƒ¼ã‚¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     /// </summary>
     public class SpreadSheetObject : Dictionary<string, object>
     {
         private string sheetName;
-        private int objectId = -1; //ID‚Æ‚¢‚¤‚©As”Ô†
+        private int objectId = -1; //IDã¨ã„ã†ã‹ã€è¡Œç•ªå·
         public static string Id { get { return SystemInfo.deviceUniqueIdentifier; } }
 
         /// <summary>
-        /// •Û‚µ‚Ä‚¢‚éƒf[ƒ^‚ğint‚É‚µ‚Ä•Ô‹pB
-        /// ˆê’U•¶š—ñ‚É‚µ‚Ä‚©‚çparse‚·‚é‚Ì‚ÅáŠ±’x‚¢
+        /// ä¿æŒã—ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’intã«ã—ã¦è¿”å´ã€‚
+        /// ä¸€æ—¦æ–‡å­—åˆ—ã«ã—ã¦ã‹ã‚‰parseã™ã‚‹ã®ã§è‹¥å¹²é…ã„
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -26,8 +26,8 @@ namespace GSSA
             return int.Parse(this[key].ToString());
         }
         /// <summary>
-        /// •Û‚µ‚Ä‚¢‚éƒf[ƒ^‚ğfloat‚É‚µ‚Ä•Ô‹pB
-        /// ˆê’U•¶š—ñ‚É‚µ‚Ä‚©‚çparse‚·‚é‚Ì‚ÅáŠ±’x‚¢
+        /// ä¿æŒã—ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’floatã«ã—ã¦è¿”å´ã€‚
+        /// ä¸€æ—¦æ–‡å­—åˆ—ã«ã—ã¦ã‹ã‚‰parseã™ã‚‹ã®ã§è‹¥å¹²é…ã„
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -37,7 +37,7 @@ namespace GSSA
         }
 
         /// <summary>
-        /// •Û‚µ‚Ä‚¢‚éƒf[ƒ^‚ğstring‚É‚µ‚Ä•Ô‹p
+        /// ä¿æŒã—ã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’stringã«ã—ã¦è¿”å´
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -47,9 +47,18 @@ namespace GSSA
         }
 
         /// <summary>
-        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-        /// sheetName‚ğÈ—ª(null)‚É‚µ‚½ê‡‚ÍASpreadSheetSetting‚ÌDefalutSheetName‚ğg—p
-        /// objectId‚ÍŠî–{w’è‚µ‚È‚¢‚ªA‚ ‚¦‚Äw’è‚·‚é‚±‚Æ‚ÅASpreadSheet‚Ìs”‚ğw’è‚µ‚Äƒf[ƒ^‚ğ•Û‚Å‚«‚é
+        /// objectIdã‚’è¿”ã™
+        /// </summary>
+        /// <returns></returns>
+        public int GetObjectId ()
+        {
+            return objectId;
+        }
+
+        /// <summary>
+        /// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+        /// sheetNameã‚’çœç•¥(null)ã«ã—ãŸå ´åˆã¯ã€SpreadSheetSettingã®DefalutSheetNameã‚’ä½¿ç”¨
+        /// objectIdã¯åŸºæœ¬æŒ‡å®šã—ãªã„ãŒã€ã‚ãˆã¦æŒ‡å®šã™ã‚‹ã“ã¨ã§ã€SpreadSheetã®è¡Œæ•°ã‚’æŒ‡å®šã—ã¦ãƒ‡ãƒ¼ã‚¿ã‚’ä¿æŒã§ãã‚‹
         /// </summary>
         /// <param name="sheetName"></param>
         /// <param name="objectId"></param>
@@ -60,9 +69,9 @@ namespace GSSA
         }
 
         /// <summary>
-        /// •Û‘¶ˆ—
-        /// Coroutine‚Ì’†‚Å‚ ‚ê‚Îyield return‚Å‘Ò‹@‰Â”\
-        /// •Ô‹p’l(int)‚Í‚»‚Ì‚Ü‚ÜobjectId‚Æ‚µ‚ÄŠi”[‚³‚ê‚éB@•‰”‚Ìê‡‚Í•Û‘¶ˆ—¸”sB
+        /// ä¿å­˜å‡¦ç†
+        /// Coroutineã®ä¸­ã§ã‚ã‚Œã°yield returnã§å¾…æ©Ÿå¯èƒ½
+        /// è¿”å´å€¤(int)ã¯ãã®ã¾ã¾objectIdã¨ã—ã¦æ ¼ç´ã•ã‚Œã‚‹ã€‚ã€€è² æ•°ã®å ´åˆã¯ä¿å­˜å‡¦ç†å¤±æ•—ã€‚
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
@@ -86,7 +95,7 @@ namespace GSSA
 
             using (var www = UnityWebRequest.Post(SpreadSheetSetting.Instance.SpreadSheetUrl, form))
             {
-                yield return www.Send();
+                yield return www.SendWebRequest ();
                 if (SpreadSheetSetting.Instance.IsDebugLogOutput)
                 {
                     Debug.Log("GSSA SaveAsync Response:\n" + www.downloadHandler.text);
@@ -96,6 +105,47 @@ namespace GSSA
                 if(callback != null)callback.Invoke(objectId);
             }
             complete(true);
+        }
+
+        /// <summary>
+        /// è¡Œ(æ¨ªä¸€åˆ—ã®ãƒ‡ãƒ¼ã‚¿)ã®å‰Šé™¤å‡¦ç†
+        /// Coroutineã®ä¸­ã§ã‚ã‚Œã°yield returnã§å¾…æ©Ÿå¯èƒ½
+        /// è¿”å´å€¤(int)ã¯ãã®ã¾ã¾objectIdã¨ã—ã¦æ ¼ç´ã•ã‚Œã‚‹ã€‚ã€€è² æ•°ã®å ´åˆã¯å‰Šé™¤å‡¦ç†å¤±æ•—ã€‚
+        /// å¼•æ•°ã‚’æ¸¡ã—ã¦å‰Šé™¤ã™ã‚‹è¡Œã‚’æŒ‡å®šã™ã‚‹
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public CustomYieldInstruction DeleteAsync (Action<int> callback = null)
+        {
+            var complete = false;
+            SpreadSheetSetting.Instance.Enqueue (() => DeleteAsyncIterator (callback, b => complete = b));
+            return new WaitUntil (() => complete);
+        }
+
+        private IEnumerator DeleteAsyncIterator (Action<int> callback, Action<bool> complete)
+        {
+            var form = new WWWForm ();
+            form.AddField (SpreadSheetConst.Method, "Delete");
+            form.AddField (SpreadSheetConst.SheetName, sheetName);
+            form.AddField (SpreadSheetConst.ObjectId, objectId);
+            foreach (var pair in this)
+            {
+                form.AddField (pair.Key, pair.Value.ToString ());
+            }
+
+            using (var www = UnityWebRequest.Post (SpreadSheetSetting.Instance.SpreadSheetUrl, form))
+            {
+                yield return www.SendWebRequest ();
+                if (SpreadSheetSetting.Instance.IsDebugLogOutput)
+                {
+                    Debug.Log ("GSSA DeleteAsync Response:\n" + www.downloadHandler.text);
+                }
+                var jsonNode = JsonNode.Parse (www.downloadHandler.text);
+                objectId = jsonNode [SpreadSheetConst.ObjectId].GetInt ();
+                if (callback != null)
+                    callback.Invoke (objectId);
+            }
+            complete (true);
         }
     }
 }
