@@ -50,7 +50,7 @@ namespace GSSA
             {
                 if (sinstance == null)
                 {
-                    sinstance = FindObjectOfType<SpreadSheetSetting>();
+                    sinstance = FindFirstObjectByType<SpreadSheetSetting>();
                     if (sinstance == null)
                     {
                         var obj = new GameObject(typeof(SpreadSheetSetting).Name);

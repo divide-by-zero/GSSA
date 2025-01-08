@@ -17,4 +17,4 @@
         public const string IsDesc = "$id$";
         public const string Distinct = "$di$";
     }
-}   
+}

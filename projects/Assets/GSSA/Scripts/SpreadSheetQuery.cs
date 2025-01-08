@@ -230,7 +230,7 @@ namespace GSSA
 
             using (var www = UnityWebRequest.Post(SpreadSheetSetting.Instance.SpreadSheetUrl, form))
             {
-                yield return www.Send();
+                yield return www.SendWebRequest ();
                 if (SpreadSheetSetting.Instance.IsDebugLogOutput)
                 {
                     Debug.Log("GSSA FindAsync Response:\n" + www.downloadHandler.text);
@@ -286,7 +286,7 @@ namespace GSSA
 
             using (var www = UnityWebRequest.Post(SpreadSheetSetting.Instance.SpreadSheetUrl, form))
             {
-                yield return www.Send();
+                yield return www.SendWebRequest ();
                 if (SpreadSheetSetting.Instance.IsDebugLogOutput)
                 {
                     Debug.Log("GSSA CountAsync Response:\n" + www.downloadHandler.text);
